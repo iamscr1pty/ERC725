@@ -1,9 +1,8 @@
-//pragma solidity ^0.4.25;
-/*
+pragma solidity ^0.4.25;
+
 import './ClaimHolder.sol';
 
-contract ClaimVerifier {
-
+contract VerifierContract{
   event ClaimValid(ClaimHolder _identity, uint256 claimType);
   event ClaimInvalid(ClaimHolder _identity, uint256 claimType);
 
@@ -15,7 +14,7 @@ contract ClaimVerifier {
     trustedClaimHolder = ClaimHolder(_trustedClaimHolder);
   }
 
-  function checkClaim(ClaimHolder _identity, uint256 claimType)
+  /* function checkClaim(ClaimHolder _identity, uint256 claimType)
     public
     returns (bool claimValid)
   {
@@ -26,32 +25,30 @@ contract ClaimVerifier {
       emit ClaimInvalid(_identity, claimType);
       return false;
     }
-  }
+  } */
 
-  function claimIsValid(ClaimHolder _identity, uint256 claimType)
+  function claimIsValid(address _identity, uint256 claimType)
     public
     constant
     returns (bool claimValid)
   {
-    uint256 foundClaimType;
-    uint256 scheme;
     address issuer;
     bytes32 r;
     bytes32 s;
     uint8 v;
-    bytes memory data;
-
+    bytes32  data;
+    ClaimHolder  iden=ClaimHolder(_identity);
     // Construct claimId (identifier + claim type)
     bytes32 claimId = keccak256(trustedClaimHolder, claimType);
 
     // Fetch claim from user
-    ( issuer, r,s,v, data) = _identity.getClaim(claimId);
+    ( issuer, r,s,v, data) = iden.getClaim(claimId);
 
-    bytes32 dataHash = keccak256(_identity, claimType, data);
-    bytes32 prefixedHash = keccak256("\x19Ethereum Signed Message:\n32", dataHash);
+    /* bytes32 dataHash = keccak256(_identity, claimType, data);
+    bytes32 prefixedHash = keccak256("\x19Ethereum Signed Message:\n32", dataHash); */
 
     // Recover address of data signer
-    address recovered = getRecoveredAddress(r,s,v, prefixedHash);
+    address recovered = getRecoveredAddress(r,s,v, data);
 
     // Take hash of recovered address
     bytes32 hashedAddr = keccak256(recovered);
@@ -65,7 +62,7 @@ contract ClaimVerifier {
       view
       returns (address addr)
   {
-       bytes32 ra;
+      /* bytes32 ra;
       bytes32 sa;
       uint8 va;
 
@@ -83,10 +80,10 @@ contract ClaimVerifier {
 
       if (va < 27) {
         va += 27;
-      }
-
-       address recoveredAddress = ecrecover(dataHash, v, r, s);
+      } */
+      bytes32 Hash = keccak256("\x19Ethereum Signed Message:\n32", dataHash);
+      address recoveredAddress = ecrecover(Hash, v, r, s);
 
       return (recoveredAddress);
   }
-} */
+}

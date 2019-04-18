@@ -1,0 +1,40 @@
+magneto@JARVIS:~/ethereum/ERC725$ truffle console
+truffle(development)> AddressContract.deployed().then(function(i){address_holder=i})
+undefined
+truffle(development)> address_holder.issuerContract().then(function(i){issuer_address=i})
+undefined
+truffle(development)> const fs = require('fs');
+undefined
+truffle(development)> const contract = JSON.parse(fs.readFileSync('./build/contracts/ClaimHolder.json', 'utf8'));
+undefined
+truffle(development)> issuer=web3.eth.contract(contract.abi).at(issuer_address)
+
+truffle(development)> ClaimHolder.deployed().then(function(i){claimer=i})
+
+
+truffle(development)> claimer.getHashed(web3.eth.accounts[6]).then(function(i){ claimer.addKey(i,3,1,{from:web3.eth.accounts[2]})})
+
+truffle(development)> newClaimKey=issuer.getHashed(web3.eth.accounts[5])
+
+truffle(development)> issuer.addKey(newClaimKey,3,1,{from:web3.eth.accounts[0],gas: 444400})
+
+truffle(development)>  msg=web3.sha3(claimer.address,7,"textdata")
+
+truffle(development)> signature=web3.eth.sign(web3.eth.accounts[5],msg)
+
+truffle(development)> r = signature.slice(0, 66)
+truffle(development)> s = '0x' + signature.slice(66, 130)
+
+truffle(development)> v = '0x' + signature.slice(130, 132)
+
+truffle(development)> v=web3.toDecimal(v)
+
+truffle(development)> v+=27
+
+
+truffle(development)> claimer.addClaim(7,1,issuer.address,r,s,v,"textdata","hi",{from : web3.eth.accounts[6]})
+
+truffle(development)> VerifierContract.deployed().then(function(i){verify=i})
+verify.claimIsValid(claimer.address,7)
+
+

@@ -9,9 +9,9 @@ contract ClaimHolder is ERC735,KeyHolder{
   mapping(uint256 => bytes32[]) claimsByType;
 
   function getClaim(bytes32 _claimId)
-  public constant returns(uint256 claimType, uint256 scheme, address issuer, bytes signature, bytes data, string uri){
-      return (claims[_claimId].claimType,claims[_claimId].scheme,claims[_claimId].issuer,
-      claims[_claimId].signature,claims[_claimId].data,claims[_claimId].uri);
+  public constant returns( address issuer, bytes32 r,bytes32 s,uint8 v, bytes32 data){
+      return (claims[_claimId].issuer,
+      claims[_claimId].r,claims[_claimId].s,claims[_claimId].v,claims[_claimId].data);
   }
 
   function getClaimIdsByType(uint256 _claimType) public constant returns(bytes32[] claimIds){
@@ -19,7 +19,7 @@ contract ClaimHolder is ERC735,KeyHolder{
   }
 
 
-  function addClaim(uint256 _claimType, uint256 _scheme, address _issuer, bytes _signature, bytes _data, string _uri)
+  function addClaim(uint256 _claimType, uint256 _scheme, address _issuer, bytes32 r,bytes32 s,uint8 v, bytes32 _data, string _uri)
   public returns (bytes32 claimRequestId){
       bytes32 _claimId=keccak256(_issuer,_claimType);
       if(msg.sender!=address(this)){
@@ -31,7 +31,9 @@ contract ClaimHolder is ERC735,KeyHolder{
       claims[_claimId].claimType = _claimType;
       claims[_claimId].scheme = _scheme;
       claims[_claimId].issuer = _issuer;
-      claims[_claimId].signature = _signature;
+      claims[_claimId].r=r;
+      claims[_claimId].s=s;
+      claims[_claimId].v=v;
       claims[_claimId].data = _data;
       claims[_claimId].uri = _uri;
 
@@ -40,7 +42,6 @@ contract ClaimHolder is ERC735,KeyHolder{
           _claimType,
           _scheme,
           _issuer,
-          _signature,
           _data,
           _uri
       );
@@ -61,7 +62,6 @@ contract ClaimHolder is ERC735,KeyHolder{
         claims[_claimId].claimType,
         claims[_claimId].scheme,
         claims[_claimId].issuer,
-        claims[_claimId].signature,
         claims[_claimId].data,
         claims[_claimId].uri
     );

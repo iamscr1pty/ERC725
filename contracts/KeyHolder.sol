@@ -108,7 +108,7 @@ contract KeyHolder is ERC725{
     executions[executionNonce].value = _value;
     executions[executionNonce].data = _data;
 
-    emit ExecutionRequested(executionNonce, _to, _value, _data);
+  //  emit ExecutionRequested(executionNonce, _to, _value, _data);
 
     if (keyHasPurpose(keccak256(msg.sender),1) || keyHasPurpose(keccak256(msg.sender),2)) {
         approve(executionNonce, true);
