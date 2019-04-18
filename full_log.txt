@@ -10,19 +10,19 @@ undefined
 truffle(development)> issuer=web3.eth.contract(contract.abi).at(issuer_address)
 
 truffle(development)> ClaimHolder.deployed().then(function(i){claimer=i})
-
-
+undefined
 truffle(development)> claimer.getHashed(web3.eth.accounts[6]).then(function(i){ claimer.addKey(i,3,1,{from:web3.eth.accounts[2]})})
-
+undefined
 truffle(development)> newClaimKey=issuer.getHashed(web3.eth.accounts[5])
 
 truffle(development)> issuer.addKey(newClaimKey,3,1,{from:web3.eth.accounts[0],gas: 444400})
 
-truffle(development)>  msg=web3.sha3(claimer.address,7,"textdata")
+truffle(development)> msg=web3.sha3(claimer.address,7,"textdata")
 
 truffle(development)> signature=web3.eth.sign(web3.eth.accounts[5],msg)
 
 truffle(development)> r = signature.slice(0, 66)
+
 truffle(development)> s = '0x' + signature.slice(66, 130)
 
 truffle(development)> v = '0x' + signature.slice(130, 132)
@@ -31,10 +31,22 @@ truffle(development)> v=web3.toDecimal(v)
 
 truffle(development)> v+=27
 
-
 truffle(development)> claimer.addClaim(7,1,issuer.address,r,s,v,msg,"hi",{from : web3.eth.accounts[6]})
 
-truffle(development)> VerifierContract.deployed().then(function(i){verify=i})
-verify.claimIsValid(claimer.address,7)
+truffle(development)> Election.deployed().then(function(i){verify=i})
+
+
+truffle(development)> verify.address
+
+truffle(development)> claimer.execute('0x817107691d2dd91ad2c25a94d6bdf30226d255bf',1,'hi',{from:web3.eth.accounts[2]})
+
+
+
+
+truffle(development)> verify.getVoteCount(1).then(function(i){console.log(i.toNumber());})
+1
+undefined
+truffle(development)> verify.getVoteCount(3).then(function(i){console.log(i.toNumber());})
+0
 
 

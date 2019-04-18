@@ -2,6 +2,7 @@ pragma solidity ^0.4.25;
 
 import './ERC725.sol';
 import './testCalling.sol';
+import './Election.sol';
 
 contract KeyHolder is ERC725{
 
@@ -72,8 +73,8 @@ contract KeyHolder is ERC725{
               executions[_id].approved = true;
               //Example : contractAddress.call(bytes4(keccak256("foobar(uint256,uint256)")), val1, val2);
               //success = executions[_id].to.call.value(executions[_id].value)(executions[_id].data, 0);
-              testCalling cont=testCalling(executions[_id].to);
-              cont.toBeCalled();//delegatecall(bytes4(keccak256("toBeCalled()")));
+            Election cont=Election(executions[_id].to);
+              cont.vote(executions[_id].value);//delegatecall(bytes4(keccak256("toBeCalled()")));
               if (success) {
                   executions[_id].executed = true;
                   emit Executed(

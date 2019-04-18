@@ -1,5 +1,5 @@
 const claimHolder = artifacts.require("./ClaimHolder.sol");
-const claimVerifier = artifacts.require("./VerifierContract.sol");
+const claimVerifier = artifacts.require("./Election.sol");
 const testCalling = artifacts.require("./testCalling.sol");
 const addressContract=artifacts.require("./AddressContract.sol");
 var firstClaimHolderAddress;
